@@ -264,3 +264,116 @@ docker network ls
 - We can see all networks by own created and by default docker created network as well
 ![alt text](image-7.png) 
 
+
+- Earlier, we started with this technique using:
+```shell
+docker run --name mongodb --rm mongo
+``` 
+- Now, while running this container, we need to place it inside the custom network that we created. That means we want this container to run within our own custom network boundary.
+
+So after docker run, we will use the --network option and provide the name of our custom network. Then the MongoDB container will run inside that specific network boundary.
+
+```shell
+docker run --name mongodb --rm --network ts-docker-network mongo
+``` 
+- Now our MongoDB container is running.
+
+- Next, let’s go to the .env file.
+
+Earlier we run databse like this:
+1. mongdb local ip address
+```jsx
+DB_URL=mongodb://localhost:27017/ts-docker-db
+```
+2. host.docker.internal
+```jsx
+DB_URL=mongodb://host.docker.internal:27017/ts-docker-db
+```
+3. network ip address like: 172.17.0.2
+```jsx
+DB_URL=mongodb://172.17.0.2:27017/ts-docker-db
+```
+- Now it will be just container name: 
+
+```jsx
+DB_URL=mongodb://mongodb:27017/ts-docker-db
+```
+So instead of using the IP address in the database URL, we can simply write mongodb.
+That means earlier, where we were replacing localhost with an IP address, now we can just use the container name. Docker will automatically resolve that container name into the correct IP address internally.
+
+As a result, even if the container IP address changes dynamically, we do not need to worry about it anymore.
+
+Now, since we replaced the host with mongodb, let’s run the backend container again.
+
+- Since we already placed MongoDB inside a network, we also want our backend container to run inside that same network.
+
+Earlier, we ran the backend container using a Docker command. Now we will also add the --network option there and provide the same network name.
+
+So now both containers are inside the same network.
+
+When two containers stay inside the same network or boundary, we no longer need to manually provide the IP address. Instead, we can simply use the container name.
+
+- Run this command to start backend container with same network:
+```shell
+docker run -p 5000:5000 --name ts-container --rm -w //app -v ts-docker-logs://app/logs -v "//$(pwd)"://app -v //app/node_modules --env-file .env --network ts-docker-network ts-docker:v4
+```
+
+- The server connects successfully.
+
+So this is how we can place multiple containers inside the same Docker network and make them communicate with each other simply by using container names.
+
+Now think about the frontend-backend example we imagined earlier. Suppose we containerized the frontend too. If the frontend and backend containers are inside the same network
+
+So from the next module onward, we will keep the frontend, backend, and database containers inside the same network boundary and see how they communicate with each other.
+
+In the next video, we will try to understand how Docker or the environment actually resolves these names internally. For example:
+
+- how localhost becomes 127.0.0.1
+- how container names are resolved into IP addresses
+- and how Docker networking handles all of this behind the scenes.
+
+See you in the next video.
+
+
+## Docker Network Management and How Docker Resolves IP Address
+
+![alt text](image-8.png)
+
+- We have now seen how multiple containers can work together through networking.
+
+The main things we understood here are:
+
+- If we want a container to communicate with the outside world, that is completely fine.
+- If we want a container to communicate with our local machine, that is also possible. In that case, we just need to use the host.docker.internal address.
+- But if we want one container to communicate with another container, that is not possible by default. For that, we need to place both containers inside the same Docker network. Only then can those containers communicate with each other easily.
+
+Now, another important thing is that even without creating a network, we could still make containers communicate by using the IP address of a container.
+
+However, that approach is inconvenient because container IP addresses can change dynamically.
+
+That is why Docker provides the Docker Network feature. Using this feature, we can place multiple containers inside the same network and allow them to communicate with each other easily.
+
+In that case, we no longer need IP addresses. Instead, we can directly use the container name in place of localhost.
+
+So rather than writing an IP address, we simply use the container name as the address, and Docker automatically resolves it internally.
+
+This is how we can easily establish communication between containers.
+
+Now, while working with Docker networking, we also saw some important concepts. One of them is how to create a Docker network.
+
+We already know that we can create a network using a command like:
+
+```shell
+docker network create ts-docker-network
+```
+- How to delete existing network like this command:
+- single network delete
+```shell
+docker network rm (Network Id)
+```
+- multiple delete 
+```shell
+docker network prune
+```
+
+![alt text](image-9.png)
