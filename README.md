@@ -335,7 +335,7 @@ In the next video, we will try to understand how Docker or the environment actua
 See you in the next video.
 
 
-## Docker Network Management and How Docker Resolves IP Address
+## 4 - 10 Docker Network Management and How Docker Resolves IP Address
 
 ![alt text](image-8.png)
 
