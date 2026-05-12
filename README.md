@@ -361,7 +361,7 @@ This is how we can easily establish communication between containers.
 
 Now, while working with Docker networking, we also saw some important concepts. One of them is how to create a Docker network.
 
-We already know that we can create a network using a command like:
+We already know that we can create a network using a command:
 
 ```shell
 docker network create ts-docker-network
